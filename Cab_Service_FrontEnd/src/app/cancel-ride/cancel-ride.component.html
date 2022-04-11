@@ -1,0 +1,71 @@
+<div *ngIf="showForm" class="card mx-auto" style="width: 50%; margin-top: 2%;">
+    <h5 class="card-header">Tell Us Your Mobile Number</h5>
+    <div class="card-body">
+        <form [formGroup]="cancelRideForm" (ngSubmit)="showRide()">
+            <div class="form-group">
+                <label> Mobile Number: </label>
+                <input
+                    [style.border-color]="cancelRideForm.controls.userMobile.valid && cancelRideForm.controls.userMobile.touched ? 'green' : ''"
+                    type="number" id="mobileNo" class="form-control" formControlName="userMobile">
+                <span id="mobileNoError" class="text-danger"
+                    *ngIf="cancelRideForm.controls.userMobile.invalid && cancelRideForm.controls.userMobile.dirty">Please
+                    provide a valid Phone Number.</span>
+                <span class="text-success" *ngIf="cancelRideForm.controls.userMobile.valid">Looks
+                    Good!</span>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mt-3">Show Rides</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div *ngIf="showRides" class="card mx-auto mb-5" style="width: 80%; margin-top: 2%;">
+    <div class="card-header bg-primary text-white">
+        <h5>Your Booked Rides:
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            <span class="text-warning">+91-{{cancelRideForm.value['userMobile']}}</span></h5>
+    </div>
+    <div class="card-body">
+        <div class="text-center">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Booking Id</th>
+                        <th scope="col">Source</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Fare</th>
+                        <th scope="col">Travel Date</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let ride of rides">
+                        <td>{{ ride.bookingId }}</td>
+                        <td>{{ ride.source }}</td>
+                        <td>{{ ride.destination }}</td>
+                        <td>{{ ride.fare | currency:'INR':'symbol'}}</td>
+                        <td>{{ ride.travelDate | date:'mediumDate'}}</td>
+                        <td><button class="btn btn-danger" (click)="cancelRide(ride)">Cancel Ride</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-warning mt-3" (click)="changeNumber()">Change Mobile Number</button>
+        </div>
+    </div>
+</div>
+<div *ngIf="successMessage!=null" class="alert alert-success text-center mx-auto mt-3" role="alert" style="width: 50%;">
+    {{ successMessage }}
+</div>
+<div *ngIf="errorMessage!=null" class="alert alert-danger text-center mx-auto mt-3" role="alert" style="width: 50%;">
+    {{ errorMessage }}
+</div>

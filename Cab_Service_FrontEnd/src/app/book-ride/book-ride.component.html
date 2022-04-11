@@ -1,0 +1,90 @@
+<div class="card mx-auto" style="width: 50%; margin-top: 2%;">
+    <h5 class="card-header">Fill Out The Details</h5>
+    <div class="card-body">
+        <form [formGroup]="bookRideForm" (ngSubmit)="bookRide()">
+            <div class="form-group">
+                <label> Mobile Number: </label>
+                <input
+                    [style.border-color]="bookRideForm.controls.userMobile.valid && bookRideForm.controls.userMobile.touched ? 'green' : ''"
+                    type="number" id="mobileNo" class="form-control" formControlName="userMobile">
+                <span id="mobileNoError" class="text-danger"
+                    *ngIf="bookRideForm.controls.userMobile.invalid && bookRideForm.controls.userMobile.dirty">Please
+                    provide a valid Phone Number.</span>
+                <span class="text-success" *ngIf="bookRideForm.controls.userMobile.valid">Looks
+                    Good!</span>
+            </div>
+            <div class="input-group mt-3 mb-3">
+                <span class="input-group-text">From :</span>
+                <input
+                    [style.border-color]="bookRideForm.controls.source.valid && bookRideForm.controls.source.touched ? 'green' : ''"
+                    type="text" class="form-control" placeholder="Type Source..." formControlName="source"
+                    [(ngModel)]="source" />
+                <span class="input-group-text" style="border-left: 0; border-right: 0;">To :</span>
+                <input
+                    [style.border-color]="bookRideForm.controls.destination.valid && bookRideForm.controls.destination.touched ? 'green' : ''"
+                    type="text" class="form-control" placeholder="Type Destination..." formControlName="destination"
+                    [(ngModel)]="destination" />
+            </div>
+
+            <div class="row">
+                <span id="sourceError" class="text-danger col-md-6"
+                    *ngIf="bookRideForm.controls.source.invalid && bookRideForm.controls.source.dirty">Please
+                    provide a valid Source.
+                </span>
+                <span id="destinationError" class="text-danger col-md-6"
+                    *ngIf="bookRideForm.controls.destination.invalid && bookRideForm.controls.destination.dirty">
+                    Please provide a valid Destination.
+                </span>
+            </div>
+            <p class="text-info">*Note: Please Choose Source and Destination from the <b><a style="cursor: pointer;"
+                        (click)="showFares()">Fare Table</a></b>.</p>
+            <div class="text-center">
+                <table *ngIf="showFare" class="table table-bordered table-sm table-hover table-responsive">
+                    <thead>
+                        <tr>
+                            <th scope="col">Fare Id</th>
+                            <th scope="col">Source</th>
+                            <th scope="col">Destination</th>
+                            <th scope="col">Fare</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let fare of fares; let i=index;" (click)="fareSelected(fare)"
+                            style="cursor: pointer;">
+                            <td>{{ fare.fareId }}</td>
+                            <td>{{ fare.source }}</td>
+                            <td>{{ fare.destination }}</td>
+                            <td>{{ fare.fare | currency:'INR':'symbol'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-group">
+                <label> Travel Date: </label>
+                <input
+                    [style.border-color]="bookRideForm.controls.travelDate.valid && bookRideForm.controls.travelDate.touched ? 'green' : ''"
+                    type="date" class="form-control" formControlName="travelDate">
+                <span id="mobileNoError" class="text-danger"
+                    *ngIf="bookRideForm.controls.travelDate.invalid && bookRideForm.controls.travelDate.dirty">Please
+                    provide a valid Travel Date.</span>
+                <span class="text-success" *ngIf="bookRideForm.controls.travelDate.valid">Awesome!</span>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mt-3">Book Ride</button>
+            </div>
+        </form>
+    </div>
+    <div *ngIf="bookErrorMessage!=null" class="card-footer">
+        <p class="text-danger">{{ noOfErrors }} Error(s) Occurred. Please scroll down <b>↓</b></p>
+    </div>
+</div>
+<div *ngIf="successMessage!=null" class="alert alert-success text-center mx-auto mt-3" role="alert" style="width: 50%;">
+    {{ successMessage }}
+</div>
+<div *ngIf="bookErrorMessage!=null">
+    <div *ngFor="let error of bookErrorMessageArray" class="alert alert-danger text-center mx-auto mt-3" role="alert"
+        style="width: 50%;">
+        {{ error }}
+    </div>
+</div>

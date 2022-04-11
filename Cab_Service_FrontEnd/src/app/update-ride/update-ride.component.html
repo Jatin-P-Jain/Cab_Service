@@ -1,0 +1,166 @@
+<div *ngIf="showForm" class="card mx-auto" style="width: 50%; margin-top: 2%;">
+    <h5 class="card-header">Tell Us Your Mobile Number</h5>
+    <div class="card-body">
+        <form [formGroup]="updateRideForm" (ngSubmit)="showRide()">
+            <div class="form-group">
+                <label> Mobile Number: </label>
+                <input
+                    [style.border-color]="updateRideForm.controls.userMobile.valid && updateRideForm.controls.userMobile.touched ? 'green' : ''"
+                    type="number" id="mobileNo" class="form-control" formControlName="userMobile">
+                <span id="mobileNoError" class="text-danger"
+                    *ngIf="updateRideForm.controls.userMobile.invalid && updateRideForm.controls.userMobile.dirty">Please
+                    provide a valid Phone Number.</span>
+                <span class="text-success" *ngIf="updateRideForm.controls.userMobile.valid">Looks
+                    Good!</span>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mt-3">Show Rides</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div *ngIf="showRides" class="card mx-auto mb-5" style="width: 80%; margin-top: 2%;">
+    <div class="card-header bg-primary text-white">
+        <h5>Your Booked Rides:
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="text-warning">+91-{{updateRideForm.value['userMobile']}}</span>
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="text-center">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Booking Id</th>
+                        <th scope="col">Source</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Fare</th>
+                        <th scope="col">Travel Date</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let ride of rides">
+                        <td>{{ ride.bookingId }}</td>
+                        <td>{{ ride.source }}</td>
+                        <td>{{ ride.destination }}</td>
+                        <td>{{ ride.fare | currency:'INR':'symbol'}}</td>
+                        <td>{{ ride.travelDate | date:'mediumDate'}}</td>
+                        <td><button class="btn btn-info" (click)="updateRide(ride)">Update Ride</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-warning mt-3" (click)="changeNumber()">Change Mobile Number</button>
+        </div>
+    </div>
+</div>
+<div *ngIf="showError" class="alert alert-danger text-center mx-auto mt-3" role="alert" style="width: 50%;">
+    {{ errorMessage }}
+</div>
+
+<div *ngIf="showUpdateForm" class="card mx-auto" style="width: 50%; margin-top: 2%;">
+    <h5 class="card-header"><span class="text-success">Booking Id : {{rideDetails['bookingId']}}</span> - Update Details </h5>
+    <div class="card-body">
+        <form [formGroup]="updateRideDetailsForm" (ngSubmit)="submitUpdateRide()">
+            <div class="form-group">
+                <label> Mobile Number: </label>
+                <input
+                    [style.border-color]="updateRideDetailsForm.controls.userMobile.valid && updateRideDetailsForm.controls.userMobile.touched ? 'green' : ''"
+                    type="number" id="mobileNo" class="form-control" formControlName="userMobile"
+                    [(ngModel)]="userMobile" readonly>
+                <span id="mobileNoError" class="text-danger"
+                    *ngIf="updateRideDetailsForm.controls.userMobile.invalid && updateRideDetailsForm.controls.userMobile.dirty">Please
+                    provide a valid Phone Number.</span>
+                <span class="text-success" *ngIf="updateRideDetailsForm.controls.userMobile.valid">Looks
+                    Good!</span>
+            </div>
+            <div class="input-group mt-3 mb-3">
+                <span class="input-group-text">From :</span>
+                <input
+                    [style.border-color]="updateRideDetailsForm.controls.source.valid && updateRideDetailsForm.controls.source.touched ? 'green' : ''"
+                    type="text" class="form-control" placeholder="Type Source..." formControlName="source"
+                    [(ngModel)]="source"/>
+                <span class="input-group-text" style="border-left: 0; border-right: 0;">To :</span>
+                <input
+                    [style.border-color]="updateRideDetailsForm.controls.destination.valid && updateRideDetailsForm.controls.destination.touched ? 'green' : ''"
+                    type="text" class="form-control" placeholder="Type Destination..." formControlName="destination"
+                    [(ngModel)]="destination"/>
+            </div>
+
+            <div class="row">
+                <span id="sourceError" class="text-danger col-md-6"
+                    *ngIf="updateRideDetailsForm.controls.source.invalid && updateRideDetailsForm.controls.source.dirty">Please
+                    provide a valid Source.
+                </span>
+                <span id="destinationError" class="text-danger col-md-6"
+                    *ngIf="updateRideDetailsForm.controls.destination.invalid && updateRideDetailsForm.controls.destination.dirty">
+                    Please provide a valid Destination.
+                </span>
+            </div>
+            <p class="text-info">*Note: Please Choose Source and Destination from the <b><a style="cursor: pointer;"
+                        (click)="showFares()">Fare Table</a></b>.</p>
+            <div class="text-center">
+                <table *ngIf="showFare" class="table table-bordered table-sm table-hover table-responsive">
+                    <thead>
+                        <tr>
+                            <th scope="col">Fare Id</th>
+                            <th scope="col">Source</th>
+                            <th scope="col">Destination</th>
+                            <th scope="col">Fare</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let fare of fares; let i=index;" (click)="fareSelected(fare)"
+                            style="cursor: pointer;">
+                            <td>{{ fare.fareId }}</td>
+                            <td>{{ fare.source }}</td>
+                            <td>{{ fare.destination }}</td>
+                            <td>{{ fare.fare | currency:'INR':'symbol'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-group">
+                <label> Travel Date: </label>
+                <input
+                    [style.border-color]="updateRideDetailsForm.controls.travelDate.valid && updateRideDetailsForm.controls.travelDate.touched ? 'green' : ''"
+                    type="date" class="form-control" formControlName="travelDate" [(ngModel)]="travelDate">
+                <span id="mobileNoError" class="text-danger"
+                    *ngIf="updateRideDetailsForm.controls.travelDate.invalid && updateRideDetailsForm.controls.travelDate.dirty">Please
+                    provide a valid Travel Date.</span>
+                <span class="text-success" *ngIf="updateRideDetailsForm.controls.travelDate.valid">Awesome!</span>
+            </div>
+            <div class="row">
+                <div class="text-center col-md-6">
+                    <button type="submit" class="btn btn-primary mt-3">Confirm</button>
+                </div>
+                <div class="text-center col-md-6">
+                    <button class="btn btn-danger mt-3" (click)="cancelUpdateForm()">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div *ngIf="updateErrorMessage!=null" class="card-footer">
+        <p class="text-danger">{{ noOfErrors }} Error(s) Occurred. Please scroll down <b>↓</b></p>
+    </div>
+</div>
+<div *ngIf="successMessage!=null" class="alert alert-success text-center mx-auto mt-3" role="alert" style="width: 50%;">
+    {{ successMessage }}
+</div>
+<div *ngIf="updateErrorMessage!=null">
+    <div *ngFor="let error of updateErrorMessageArray" class="alert alert-danger text-center mx-auto mt-3" role="alert"
+        style="width: 50%;">
+        {{ error }}
+    </div>
+</div>
